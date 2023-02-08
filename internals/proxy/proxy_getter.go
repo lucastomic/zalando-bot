@@ -2,14 +2,15 @@ package proxy
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 )
 
-// GetProxies gets a list of proxies from an external API and returns them in a Proxy segment.
+var apiURL string = "https://proxylist.geonode.com/api/proxy-list?limit=500&page=1&sort_by=lastChecked&sort_type=desc&google=true"
+
+// GetProxiesFromAPI gets a list of proxies from an external API and returns them in a Proxy slice.
 // On error, return null and an error.
-func GetProxies() ([]Proxy, error) {
+func GetProxiesFromAPI() ([]Proxy, error) {
 	var proxies []Proxy
 
 	response, err := getProxiesResponse()
@@ -25,7 +26,7 @@ func GetProxies() ([]Proxy, error) {
 }
 
 // getProxiesResponse makes an HTTP request to get the list of proxies to the API: https://geonode.com/free-proxy-list
-// On an error, return null and an error.
+// On an error, return null and the error.
 // The JSON body from the response looks like this:
 //
 //	{
@@ -50,8 +51,7 @@ func GetProxies() ([]Proxy, error) {
 //	    "limit": 2
 //	}
 func getProxiesResponse() (*http.Response, error) {
-	url := fmt.Sprintf("https://proxylist.geonode.com/api/proxy-list?limit=%d&page=1&sort_by=lastChecked&sort_type=desc", proxysNumber)
-	res, err := http.Get(url)
+	res, err := http.Get(apiURL)
 	if err != nil {
 		return nil, err
 	}
