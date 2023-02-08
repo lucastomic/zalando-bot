@@ -1,11 +1,11 @@
 package proxy
 
 import (
-	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
 )
 
 // Proxy server. Specifies his IP and his port
@@ -56,17 +56,11 @@ func (p Proxy) Parse() string {
 // To checks this makes a simple request to http://ip-api.com/json/
 func (p *Proxy) Check() bool {
 	resp, err := p.makeSimpleReq()
+	if err != nil || resp.StatusCode != 200 {
+		return false
+	}
 
-	if err != nil {
-		fmt.Println(err)
-		return false
-	}
-	if resp.StatusCode != 200 {
-		fmt.Println(errors.New("status code " + resp.Status))
-		return false
-	}
 	return true
-
 }
 
 // makeSimpleReq makes a simple GET request with the proxy to test if it works properly
@@ -74,7 +68,17 @@ func (p Proxy) makeSimpleReq() (*http.Response, error) {
 	proxyURL, _ := url.Parse(p.Parse())
 	proxy := http.ProxyURL(proxyURL)
 	transport := &http.Transport{Proxy: proxy}
-	client := &http.Client{Transport: transport}
+	client := &http.Client{
+		Transport: transport,
+		Timeout:   5 * time.Second,
+	}
 	req, _ := http.NewRequest("GET", "http://ip-api.com/json/", nil)
 	return client.Do(req)
+}
+
+// ToCSV returns the a string with the proxy information in CSV fromat with an line jump at the end.
+// For example:
+// "HTTP, 192.168.1.100, 8080 \n"
+func (p Proxy) ToCSV() string {
+	return p.protocols[0] + "," + p.ip + "," + p.port + "\n"
 }
