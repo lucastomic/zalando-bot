@@ -1,11 +1,10 @@
 package logger
 
 import (
-	"time"
-
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/launcher/flags"
+	"github.com/lucastomic/zalando-bot/internals/proxy"
 )
 
 const (
@@ -13,17 +12,18 @@ const (
 	emailSelector    = "#sso > div > div:nth-child(2) > main > div > div._134xl > div > div > div > form > div:nth-child(1) > div > div > input"
 	passwordSelector = "#sso > div > div:nth-child(2) > main > div > div._134xl > div > div > div > form > div:nth-child(2) > div > div > input"
 	submitSelector   = "#sso > div > div:nth-child(2) > main > div > div._134xl > div > div > div > form > button"
-	email            = "lucastomic17@gmail.com"
-	password         = "." //Removed to add to Github
 )
 
+// proxyIterator is the iterator wihch will provide the proxies for the scrapping
+var proxyIterator, _ = proxy.NewIterator()
+
 // fillEmail looks for the Email input and fills it with the email var content
-func fillEmail(page *rod.Page) {
+func fillEmail(page *rod.Page, email string) {
 	page.MustElement(emailSelector).MustInput(email)
 }
 
 // fillPassword looks for the Password input and fills it with the password var content
-func fillPassword(page *rod.Page) {
+func fillPassword(page *rod.Page, password string) {
 	page.MustElement(passwordSelector).MustInput(password)
 }
 
@@ -43,16 +43,16 @@ func getControlURL(proxyIP, port string) string {
 // openPage looks for the url and opens it in the navigator.
 // Returns the object of type Page.
 func openPage() *rod.Page {
-	controlURL := getControlURL("154.236.184.71", "1981")
+	proxy := proxyIterator.NextProxy()
+	controlURL := getControlURL(proxy.GetIP(), proxy.GetPort())
 	return rod.New().MustConnect().ControlURL(controlURL).NoDefaultDevice().MustConnect().MustPage(url)
 }
 
 // Signs in the user with the propierties setted before
-func SignIn() {
+func SignIn(email, password string) {
 	page := openPage()
 	page.MustWindowFullscreen()
-	fillEmail(page)
-	fillPassword(page)
+	fillEmail(page, email)
+	fillPassword(page, password)
 	pressSubmitButton(page)
-	time.Sleep(time.Hour)
 }
