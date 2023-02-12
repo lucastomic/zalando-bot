@@ -8,9 +8,9 @@ import (
 
 var apiURL string = "https://proxylist.geonode.com/api/proxy-list?limit=500&page=1&sort_by=lastChecked&sort_type=desc&google=true"
 
-// GetProxiesFromAPI gets a list of proxies from an external API and returns them in a Proxy slice.
+// getProxiesFromAPI gets a list of proxies from an external API and returns them in a Proxy slice.
 // On error, return null and an error.
-func GetProxiesFromAPI() ([]Proxy, error) {
+func getProxiesFromAPI() ([]Proxy, error) {
 	var proxies []Proxy
 
 	response, err := getProxiesResponse()
@@ -97,7 +97,7 @@ func parseProxiesResponse(response *http.Response, proxies *[]Proxy) error {
 	}
 
 	for _, proxyData := range responseData.Data {
-		newPropxy := NewProxy(proxyData.Ip, proxyData.Port, proxyData.Protocols)
+		newPropxy := newProxy(proxyData.Ip, proxyData.Port, proxyData.Protocols)
 		*proxies = append(*proxies, newPropxy)
 	}
 
