@@ -1,5 +1,7 @@
 package proxy
 
+//TODO: This struct should be a Singleton
+
 // proxiesFileRoute is the route where all the peoxies are stored
 const proxiesFileRoute string = "../../data/proxies.csv"
 
