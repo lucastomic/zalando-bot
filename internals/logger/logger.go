@@ -6,6 +6,7 @@ import (
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/launcher/flags"
+	"github.com/go-rod/stealth"
 	"github.com/lucastomic/zalando-bot/internals/proxy"
 )
 
@@ -37,7 +38,7 @@ func pressSubmitButton(page *rod.Page) {
 // getControlURL retunrns the URL of a launcher which uses the proxy with IP passed as argument
 func getControlURL(proxy proxy.Proxy) string {
 	l := launcher.New()
-	l = l.Set(flags.ProxyServer, proxy.GetIP()+":"+proxy.GetPort())
+	l = l.Set(flags.ProxyServer, proxy.GetIP()+":"+proxy.GetPort()) //TODO: Esta dando problemas con net::ERR_EMPTY_RESPONSE
 	l = l.Bin("/Applications/Google Chrome.app/Contents/MacOS/Google Chrome")
 	l.Headless(true)
 	controlURL, _ := l.Launch()
@@ -50,7 +51,7 @@ func openPage() *rod.Page {
 	proxy := proxyIterator.NextProxy()
 	controlURL := getControlURL(proxy)
 	browser := rod.New().ControlURL(controlURL).MustConnect()
-	return browser.MustPage(url)
+	return stealth.MustPage(browser).MustNavigate(url)
 }
 
 // Signs in the user with the propierties setted before
