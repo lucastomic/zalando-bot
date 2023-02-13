@@ -1,6 +1,8 @@
 package logger
 
 import (
+	"fmt"
+
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/launcher/flags"
@@ -33,9 +35,11 @@ func pressSubmitButton(page *rod.Page) {
 }
 
 // getControlURL retunrns the URL of a launcher which uses the proxy with IP passed as argument
-func getControlURL(proxyIP, port string) string {
+func getControlURL(proxy proxy.Proxy) string {
 	l := launcher.New()
-	l = l.Set(flags.ProxyServer, proxyIP+":"+port)
+	l = l.Set(flags.ProxyServer, proxy.GetIP()+":"+proxy.GetPort())
+	l = l.Bin("/Applications/Google Chrome.app/Contents/MacOS/Google Chrome")
+	l.Headless(true)
 	controlURL, _ := l.Launch()
 	return controlURL
 }
@@ -44,8 +48,9 @@ func getControlURL(proxyIP, port string) string {
 // Returns the object of type Page.
 func openPage() *rod.Page {
 	proxy := proxyIterator.NextProxy()
-	controlURL := getControlURL(proxy.GetIP(), proxy.GetPort())
-	return rod.New().MustConnect().ControlURL(controlURL).NoDefaultDevice().MustConnect().MustPage(url)
+	controlURL := getControlURL(proxy)
+	browser := rod.New().ControlURL(controlURL).MustConnect()
+	return browser.MustPage(url)
 }
 
 // Signs in the user with the propierties setted before
@@ -55,4 +60,11 @@ func SignIn(email, password string) {
 	fillEmail(page, email)
 	fillPassword(page, password)
 	pressSubmitButton(page)
+
+	testF(page)
+}
+
+func testF(page *rod.Page) {
+	el := page.MustElement("#z-navicat-header-root > header > div:nth-child(2) > div > div > div > div.GRuH6Q.C3wGFf > div > div > div > div.z-navicat-header_bottomRow > div:nth-child(2) > nav > ul > li:nth-child(2) > span > a > span")
+	fmt.Print(el.MustText())
 }
