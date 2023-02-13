@@ -82,7 +82,7 @@ func (p Proxy) makeSimpleReq() (*http.Response, error) {
 		Transport: transport,
 		Timeout:   5 * time.Second,
 	}
-	req, _ := http.NewRequest("GET", "http://ip-api.com/json/", nil)
+	req, _ := http.NewRequest("GET", "https://www.google.com/", nil)
 	return client.Do(req)
 }
 
