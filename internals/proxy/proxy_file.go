@@ -27,10 +27,7 @@ type file struct {
 func (p file) refreshProxies() error {
 	var wg sync.WaitGroup
 
-	proxiesToWrite, err := getProxiesFromAPI()
-	if err != nil {
-		return err
-	}
+	proxiesToWrite := getProxiesFromScrapping()
 
 	file, err := os.Create(p.path)
 	if err != nil {

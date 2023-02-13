@@ -6,6 +6,8 @@ import (
 	"net/http"
 )
 
+// WARNING: THIS PACKAGE IS DEPRECATED AS THTE PROXIES THE API RETURNS ARE NOT USEFUL ANYMORE
+
 var apiURL string = "https://proxylist.geonode.com/api/proxy-list?limit=500&page=1&sort_by=lastChecked&sort_type=desc&google=true"
 
 // getProxiesFromAPI gets a list of proxies from an external API and returns them in a Proxy slice.
