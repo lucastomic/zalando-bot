@@ -45,14 +45,11 @@ func newProxyFromCSV(csv string) (Proxy, error) {
 	}, nil
 }
 
-// getPort is the port getter. Returns a string with the available port of the proxy
-func (p Proxy) GetPort() string {
-	return p.port
-}
-
-// getHost is the host getter. Returns a string with the host of the proxy
-func (p Proxy) GetIP() string {
-	return p.ip
+// GetProxyURL returns the prozy's URL.
+// This means, a string with the next format:
+// "proxyIP:proxyPort"
+func (p Proxy) GetProxyURL() string {
+	return p.ip + ":" + p.port
 }
 
 // Parse returns a string with the Proxy info.
@@ -80,9 +77,14 @@ func (p Proxy) makeSimpleReq() (*http.Response, error) {
 	transport := &http.Transport{Proxy: proxy}
 	client := &http.Client{
 		Transport: transport,
-		Timeout:   5 * time.Second,
+		Timeout:   15 * time.Second,
 	}
-	req, _ := http.NewRequest("GET", "https://www.google.com/", nil)
+	req, err := http.NewRequest("GET", "https://www.promiedos.com.ar/", nil)
+
+	if err != nil {
+		return nil, err
+	}
+
 	return client.Do(req)
 }
 
