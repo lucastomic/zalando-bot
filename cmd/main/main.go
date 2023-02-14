@@ -1,12 +1,13 @@
 package main
 
-import "github.com/lucastomic/zalando-bot/internals/logger"
+import (
+	"sync"
+
+	"github.com/lucastomic/zalando-bot/internals/logger"
+	"github.com/lucastomic/zalando-bot/internals/proxy"
+)
 
 func main() {
-<<<<<<< HEAD
-	logger.SignIn()
-=======
-
 	it, _ := proxy.NewIterator()
 	it.RefreshProxies()
 	for i := 0; i < 5; i++ {
@@ -23,5 +24,4 @@ func main() {
 
 		wg.Wait()
 	}
->>>>>>> b12de8f446183d8f523770e816a3b84ff2468db5
 }
