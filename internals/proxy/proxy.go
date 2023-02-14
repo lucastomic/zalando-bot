@@ -9,7 +9,10 @@ import (
 	"time"
 )
 
-// Proxy server. Specifies his IP and his port
+// Proxy server
+// ip is a stirng with his IP direction. Example: 192.168.1.100
+// port is a string with the port wihch is allowed to use. Exaple: 80
+// protocols is an string array with the supported protocoles. Example: ["HTTPS", "HTTP"]
 type Proxy struct {
 	ip        string
 	port      string
