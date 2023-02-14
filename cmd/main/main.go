@@ -16,7 +16,7 @@ func main() {
 		for i := 0; i < 10; i++ {
 			wg.Add(1)
 			go func() {
-				logger.SignIn("lucastomic17@gmail.com", "94039155")
+				logger.SignIn("lucastomic17@gmail.com", ".") //removed password to add in github
 
 				wg.Done()
 			}()
