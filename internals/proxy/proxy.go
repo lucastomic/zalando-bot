@@ -80,7 +80,7 @@ func (p Proxy) makeSimpleReq() (*http.Response, error) {
 	transport := &http.Transport{Proxy: proxy}
 	client := &http.Client{
 		Transport: transport,
-		Timeout:   15 * time.Second,
+		Timeout:   5 * time.Second,
 	}
 	req, err := http.NewRequest("GET", "https://www.promiedos.com.ar/", nil)
 
